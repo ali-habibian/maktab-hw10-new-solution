@@ -54,6 +54,10 @@ public class Constants {
     public static final String GET_CONFIRMED_PRESCRIPTIONS_QUERY =
             "";
 
+    //language=MySQL
+    public static final String DELETE_ITEM_BY_ID_QUERY =
+            "DELETE FROM `pharmacy`.`items` WHERE `id` = ?";
+
     public static final String GET_CONFIRMED_PRESCRIPTIONS_ID_BY_PATIENT_ID_QUERY =
 
             "SELECT\n" +

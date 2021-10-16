@@ -68,7 +68,7 @@ public class PrescriptionDao {
         return prescription;
     }
 
-    private void addToPrescriptionItem(int prescriptionId, int itemId) {
+    public void addToPrescriptionItem(int prescriptionId, int itemId) {
         try (
                 PreparedStatement ps = connection.prepareStatement(Constants.ADD_TO_PRESCRIPTION_ITEM_TABLE_QUERY)
         ) {

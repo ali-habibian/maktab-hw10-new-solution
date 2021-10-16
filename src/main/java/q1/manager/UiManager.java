@@ -46,40 +46,48 @@ public class UiManager {
         UserDao<Patient> patientDao = new UserDao<>(DbConnection.getConnection(), new Patient(name, password));
         try {
             User patient = patientDao.login();
-            boolean isLogout = false;
-            while (!isLogout) {
-                System.out.print(Color.RED_BOLD_BRIGHT);
-                System.out.println("*** PATIENT MENU ***");
-                System.out.print(Color.RESET);
-                System.out.println("--- Select your option:  ---");
-                System.out.println("1- Add prescription");
-                System.out.println("2- See confirmed prescriptions");
-                System.out.println("3- Edit prescription");
-                System.out.println("4- Delete prescription");
-                System.out.println("5- Logout");
-
-                int option = Input.getIntInputValue("");
-
-                switch (option) {
-                    case 1:
-                        addPrescription(patientDao, (Patient) patient);
-                        break;
-                    case 2:
-                        seeConfirmedPrescriptions(patientDao, (Patient) patient);
-                        break;
-                    case 3:
-                        break;
-                    case 4:
-                        break;
-                    case 5:
-                        isLogout = true;
-                        break;
-                    default:
-                }
-            }
+            loginMenu(patientDao, (Patient) patient);
         } catch (UserNotFoundException e) {
-            System.err.println(e.getMessage());
-            showMenu();
+            e.printStackTrace();
+        }
+    }
+
+    private void loginMenu(UserDao<Patient> patientDao, Patient patient) {
+        boolean isLogout = false;
+        while (!isLogout) {
+            System.out.print(Color.RED_BOLD_BRIGHT);
+            System.out.println("*** PATIENT MENU ***");
+            System.out.print(Color.RESET);
+            System.out.println("--- Select your option:  ---");
+            System.out.println("1- Add prescription");
+            System.out.println("2- See confirmed prescriptions");
+            System.out.println("3- Edit prescription");
+            System.out.println("4- Delete prescription");
+            System.out.println("5- Logout");
+
+            int option = Input.getIntInputValue("");
+
+            switch (option) {
+                case 1:
+                    addPrescription(patientDao, (Patient) patient);
+                    break;
+                case 2:
+                    seeConfirmedPrescriptions(patientDao, (Patient) patient);
+                    break;
+                case 3:
+                    try {
+                        editPrescription(patientDao, (Patient) patient);
+                    } catch (UserNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case 4:
+                    break;
+                case 5:
+                    isLogout = true;
+                    break;
+                default:
+            }
         }
     }
 
@@ -114,5 +122,34 @@ public class UiManager {
 
     private void seeConfirmedPrescriptions(UserDao<Patient> patientDao, Patient patient) {
         patientDao.seeConfirmedPrescriptions(patient);
+    }
+
+    private void editPrescription(UserDao<Patient> patientDao, Patient patient) throws UserNotFoundException {
+        patientDao.seeNotConfirmedPrescriptionsId(patient);
+        Printer.printInfoMessage("Enter id of prescription you want to edit.");
+        int prescriptionId = Input.getIntInputValue("");
+        while (true) {
+            System.out.println("1.Add new item");
+            System.out.println("2.Delete item");
+            System.out.println("3.Back");
+            int option = Input.getIntInputValue("");
+            if (option == 1) {
+                patientDao.seeNotConfirmedPrescriptionItems(prescriptionId, patient);
+                System.out.println("Enter item name: ");
+                String itemName = Input.getStringInputValue("");
+                patientDao.addNewItemToPrescription(itemName, prescriptionId);
+                patientDao.login();
+            }
+            if (option == 2) {
+                patientDao.seeNotConfirmedPrescriptionItems(prescriptionId, patient);
+                System.out.println("Enter item id you want to delete: ");
+                int itemId = Input.getIntInputValue("");
+                patientDao.deleteItemById(itemId);
+                patientDao.login();
+            }
+            if (option == 3) {
+                loginMenu(patientDao, patient);
+            }
+        }
     }
 }

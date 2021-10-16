@@ -54,7 +54,7 @@ public class UserDao<T extends User> {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-        }else {
+        } else {
             // TODO login admin
         }
         return user;
@@ -77,7 +77,6 @@ public class UserDao<T extends User> {
                 double prescriptionItemsTotalPrice = 0;
                 for (var item : items) {
                     String itemName = item.getName();
-                    int itemDoseExist = item.getDoseExist();
                     double itemPrice = item.getPrice();
                     prescriptionItemsTotalPrice += itemPrice;
                     System.out.println("name: " + itemName + ", price: " + itemPrice);
@@ -87,6 +86,50 @@ public class UserDao<T extends User> {
                 System.out.print(Color.RESET);
             }
         }
+    }
+
+    public void seeNotConfirmedPrescriptionsId(T patient) {
+        ArrayList<Prescription> prescriptions = patient.getPrescriptions();
+        for (var prescription : prescriptions) {
+            if (prescription.getIsConfirmed() == 0) {
+                int prescriptionId = prescription.getId();
+                System.out.print(Color.CYAN_BOLD);
+                System.out.println("--- Prescription id: " + prescriptionId);
+                System.out.print(Color.RESET);
+            }
+        }
+    }
+
+    public void seeNotConfirmedPrescriptionItems(int prescriptionId, T patient) {
+        ArrayList<Prescription> prescriptions = patient.getPrescriptions();
+        for (var prescription : prescriptions) {
+            if (prescription.getId() == prescriptionId) {
+                System.out.print(Color.CYAN_BOLD);
+                System.out.println("--- Prescription id: " + prescriptionId);
+                System.out.print(Color.RESET);
+
+                ArrayList<Item> items = prescription.getItems();
+                for (var item : items) {
+                    int itemId = item.getId();
+                    String itemName = item.getName();
+                    System.out.println("id: " + itemId + "name: " + itemName);
+                }
+            }
+        }
+    }
+
+    public void addNewItemToPrescription(String itemName, int prescriptionId) {
+        Item item = new Item();
+        item.setName(itemName);
+        ItemDao itemDao = new ItemDao(connection);
+        Item item1 = itemDao.addItem(item);
+        PrescriptionDao prescriptionDao = new PrescriptionDao(connection);
+        prescriptionDao.addToPrescriptionItem(prescriptionId, item1.getId());
+    }
+
+    public void deleteItemById(int id){
+        ItemDao itemDao = new ItemDao(connection);
+        itemDao.deleteItemById(id);
     }
 
     public Prescription addPrescription(Prescription prescription) {

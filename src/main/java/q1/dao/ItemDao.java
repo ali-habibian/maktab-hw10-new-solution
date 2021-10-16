@@ -74,4 +74,15 @@ public class ItemDao {
         }
         return items;
     }
+
+    public void deleteItemById(int id) {
+        try (
+                PreparedStatement ps = connection.prepareStatement(Constants.DELETE_ITEM_BY_ID_QUERY)
+        ) {
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
