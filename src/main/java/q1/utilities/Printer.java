@@ -16,9 +16,11 @@ public class Printer {
     }
 
     public static void printInfoMessage(String msg) {
-        System.out.println();
+        System.out.print(Color.RED_BOLD_BRIGHT);
         System.out.println(">>> " + msg + " <<<");
-        printWaitingMessage();
+        System.out.print(Color.RESET);
+
+//        printWaitingMessage();
     }
 
     public static void printWaitingMessage() {
