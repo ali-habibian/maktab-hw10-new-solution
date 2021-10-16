@@ -113,4 +113,15 @@ public class PrescriptionDao {
             e.printStackTrace();
         }
     }
+
+    public void updatePrescriptionById(int prescriptionId) {
+        try (
+                PreparedStatement ps = connection.prepareStatement(Constants.UPDATE_PRESCRIPTION_BY_ID_QUERY)
+        ) {
+            ps.setInt(1, prescriptionId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

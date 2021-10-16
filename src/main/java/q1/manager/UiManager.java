@@ -68,7 +68,11 @@ public class UiManager {
                     seeAllPrescriptions(adminDao, (Admin) admin);
                     break;
                 case 2:
-                    ConfirmPrescriptions(adminDao, (Admin) admin);
+                    try {
+                        ConfirmPrescriptions(adminDao, (Admin) admin);
+                    } catch (UserNotFoundException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case 3:
                     isLogout = true;
@@ -79,8 +83,26 @@ public class UiManager {
         }
     }
 
-    private void ConfirmPrescriptions(UserDao<Admin> adminDao, Admin admin) {
-
+    private void ConfirmPrescriptions(UserDao<Admin> adminDao, Admin admin) throws UserNotFoundException {
+        adminDao.seeNotConfirmedPrescriptionsId(admin);
+        int prescriptionId = Input.getIntInputValue("Enter prescription id you want to confirm: ");
+        boolean done = false;
+        while (!done) {
+            adminDao.seeItemsByPrescriptionId(prescriptionId);
+            adminDao.updatePrescriptionById(prescriptionId);
+            int itemId = Input.getIntInputValue("Enter item id to edit it: ");
+            double price = Input.getDoubleInputValue("Enter price: ");
+            adminDao.updateItemPriceById(itemId, price);
+            Printer.printInfoMessage("item with id " + itemId + " is updated.");
+            System.out.println("Continue or Back?");
+            System.out.println("1.Continue");
+            System.out.println("2.Back");
+            int option = Input.getIntInputValue("");
+            if (option == 2) {
+                adminDao.login();
+                done = true;
+            }
+        }
     }
 
     private void seeAllPrescriptions(UserDao<Admin> adminDao, Admin admin) {

@@ -85,4 +85,16 @@ public class ItemDao {
             e.printStackTrace();
         }
     }
+
+    public void updateItemPriceById(int itemId, double price){
+        try (
+                PreparedStatement ps = connection.prepareStatement(Constants.UPDATE_ITEM_BY_ID_QUERY)
+        ) {
+            ps.setDouble(1, price);
+            ps.setInt(2, itemId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

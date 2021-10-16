@@ -31,4 +31,15 @@ public class Input {
                     System.out.print(">> ");
             }
     }
+
+    public static double getDoubleInputValue(String msg) {
+        while (true)
+            try {
+                return Double.parseDouble(getStringInputValue(msg));
+            } catch (Exception e) {
+                Printer.printErrorMessage("Invalid input!");
+                if (msg.isEmpty())
+                    System.out.print(">> ");
+            }
+    }
 }

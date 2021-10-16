@@ -144,6 +144,18 @@ public class UserDao<T extends User> {
         }
     }
 
+    public void seeItemsByPrescriptionId(int prescriptionId) {
+        ItemDao itemDao = new ItemDao(connection);
+        ArrayList<Item> items = itemDao.getItemByPrescriptionId(prescriptionId);
+        for (Item item : items) {
+            int itemId = item.getId();
+            String itemName = item.getName();
+            int doseExist = item.getDoseExist();
+            double itemPrice = item.getPrice();
+            System.out.println("id: " + itemId + ", name: " + itemName + ", dose exist: " + doseExist + ", price: " + itemPrice);
+        }
+    }
+
     public void addNewItemToPrescription(String itemName, int prescriptionId) {
         Item item = new Item();
         item.setName(itemName);
@@ -166,5 +178,15 @@ public class UserDao<T extends User> {
     public void deletePrescriptionById(int prescriptionId) {
         PrescriptionDao prescriptionDao = new PrescriptionDao(connection);
         prescriptionDao.deletePrescriptionById(prescriptionId);
+    }
+
+    public void updatePrescriptionById(int prescriptionId) {
+        PrescriptionDao prescriptionDao = new PrescriptionDao(connection);
+        prescriptionDao.updatePrescriptionById(prescriptionId);
+    }
+
+    public void updateItemPriceById(int itemId, double price) {
+        ItemDao itemDao = new ItemDao(connection);
+        itemDao.updateItemPriceById(itemId, price);
     }
 }

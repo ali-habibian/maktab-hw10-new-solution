@@ -39,8 +39,12 @@ public class Constants {
             "INSERT INTO `pharmacy`.`items` (`name`) VALUES (?)";
 
     //language=MySQL
-    public static final String UPDATE_ITEM_QUERY =
-            "UPDATE `pharmacy`.`items` SET `does_exist` = ?, `price` = ? WHERE `id` = ?";
+    public static final String UPDATE_ITEM_BY_ID_QUERY =
+            "UPDATE `pharmacy`.`items` SET `does_exist` = 1, `price` = ? WHERE `id` = ?";
+
+    //language=MySQL
+    public static final String UPDATE_PRESCRIPTION_BY_ID_QUERY =
+            "UPDATE `pharmacy`.`prescriptions` SET `is_confirmed` = 1 WHERE `id` = ?";
 
     //language=MySQL
     public static final String GET_LAST_ADDED_PRESCRIPTION_QUERY =
