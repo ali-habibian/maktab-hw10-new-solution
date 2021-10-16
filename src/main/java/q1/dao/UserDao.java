@@ -1,6 +1,5 @@
 package q1.dao;
 
-import q1.exceptions.NoDataException;
 import q1.exceptions.UserNotFoundException;
 import q1.model.*;
 import q1.utilities.Color;
@@ -48,24 +47,40 @@ public class UserDao<T extends User> {
                     user.setName(resultSet.getString("name"));
                     user.setPassword(resultSet.getString("password"));
                     PrescriptionDao prescriptionDao = new PrescriptionDao(connection);
-                    user.setPrescriptions(prescriptionDao.getPrescriptionByPatientId(user.getId()));
+                    user.setPrescriptions(prescriptionDao.getPrescriptionByUserId(
+                            user.getId(), Constants.GET_PRESCRIPTION_BY_PATIENT_ID_QUERY));
                 }
 
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         } else {
-            // TODO login admin
+            try (
+                    PreparedStatement ps = connection.prepareStatement(Constants.GET_ADMIN_BY_NAME_PASSWORD)
+            ) {
+                ps.setString(1, name);
+                ps.setString(2, password);
+
+                ResultSet resultSet = ps.executeQuery();
+
+                while (resultSet.next()) {
+                    user.setId(resultSet.getInt("id"));
+                    user.setName(resultSet.getString("name"));
+                    user.setPassword(resultSet.getString("password"));
+                    PrescriptionDao prescriptionDao = new PrescriptionDao(connection);
+                    user.setPrescriptions(prescriptionDao.getPrescriptionByUserId(
+                            user.getId(), Constants.GET_PRESCRIPTION_BY_ADMIN_ID_QUERY));
+                }
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return user;
     }
 
-    public void logout(User user) {
-        user = null;
-    }
-
-    public void seeConfirmedPrescriptions(T patient) {
-        ArrayList<Prescription> prescriptions = patient.getPrescriptions();
+    public void seeConfirmedPrescriptions(T user) {
+        ArrayList<Prescription> prescriptions = user.getPrescriptions();
         for (var prescription : prescriptions) {
             if (prescription.getIsConfirmed() == 1) {
                 int prescriptionId = prescription.getId();
@@ -88,8 +103,8 @@ public class UserDao<T extends User> {
         }
     }
 
-    public void seeNotConfirmedPrescriptionsId(T patient) {
-        ArrayList<Prescription> prescriptions = patient.getPrescriptions();
+    public void seeNotConfirmedPrescriptionsId(T user) {
+        ArrayList<Prescription> prescriptions = user.getPrescriptions();
         for (var prescription : prescriptions) {
             if (prescription.getIsConfirmed() == 0) {
                 int prescriptionId = prescription.getId();
@@ -100,8 +115,19 @@ public class UserDao<T extends User> {
         }
     }
 
-    public void seeNotConfirmedPrescriptionItems(int prescriptionId, T patient) {
-        ArrayList<Prescription> prescriptions = patient.getPrescriptions();
+    public void seeAllPrescriptionsId(T user) {
+        ArrayList<Prescription> prescriptions = user.getPrescriptions();
+        for (var prescription : prescriptions) {
+            int prescriptionId = prescription.getId();
+            System.out.print(Color.CYAN_BOLD);
+            System.out.println("--- Prescription id: " + prescriptionId + ", is confirmed: " + prescription.getIsConfirmed());
+            System.out.print(Color.RESET);
+
+        }
+    }
+
+    public void seeNotConfirmedPrescriptionItems(int prescriptionId, T user) {
+        ArrayList<Prescription> prescriptions = user.getPrescriptions();
         for (var prescription : prescriptions) {
             if (prescription.getId() == prescriptionId) {
                 System.out.print(Color.CYAN_BOLD);
@@ -127,7 +153,7 @@ public class UserDao<T extends User> {
         prescriptionDao.addToPrescriptionItem(prescriptionId, item1.getId());
     }
 
-    public void deleteItemById(int id){
+    public void deleteItemById(int id) {
         ItemDao itemDao = new ItemDao(connection);
         itemDao.deleteItemById(id);
     }
@@ -137,7 +163,7 @@ public class UserDao<T extends User> {
         return prescriptionDao.addPrescription(prescription);
     }
 
-    public void deletePrescriptionById(int prescriptionId){
+    public void deletePrescriptionById(int prescriptionId) {
         PrescriptionDao prescriptionDao = new PrescriptionDao(connection);
         prescriptionDao.deletePrescriptionById(prescriptionId);
     }

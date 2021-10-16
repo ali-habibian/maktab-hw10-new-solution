@@ -80,10 +80,10 @@ public class PrescriptionDao {
         }
     }
 
-    public ArrayList<Prescription> getPrescriptionByPatientId(int userId) {
+    public ArrayList<Prescription> getPrescriptionByUserId(int userId, String query) {
         ArrayList<Prescription> prescriptions = new ArrayList<>();
         try (
-                PreparedStatement ps = connection.prepareStatement(Constants.GET_PRESCRIPTION_BY_PATIENT_ID_QUERY)
+                PreparedStatement ps = connection.prepareStatement(query)
         ) {
             ps.setInt(1, userId);
             ResultSet resultSet = ps.executeQuery();

@@ -3,10 +3,7 @@ package q1.manager;
 import q1.dao.UserDao;
 import q1.db.DbConnection;
 import q1.exceptions.UserNotFoundException;
-import q1.model.Item;
-import q1.model.Patient;
-import q1.model.Prescription;
-import q1.model.User;
+import q1.model.*;
 import q1.utilities.Color;
 import q1.utilities.Input;
 import q1.utilities.Printer;
@@ -31,6 +28,7 @@ public class UiManager {
                     showPatientMenu();
                     break;
                 case 2:
+                    showAdminMenu();
                     break;
                 case 3:
                     isExit = true;
@@ -40,19 +38,68 @@ public class UiManager {
         }
     }
 
+    private void showAdminMenu() {
+        String name = Input.getStringInputValue("Enter your name: ");
+        String password = Input.getStringInputValue("Enter your password: ");
+        UserDao<Admin> adminDao = new UserDao<>(DbConnection.getConnection(), new Admin(name, password));
+        try {
+            User admin = adminDao.login();
+            adminLoginMenu(adminDao, (Admin) admin);
+        } catch (UserNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void adminLoginMenu(UserDao<Admin> adminDao, Admin admin) {
+        boolean isLogout = false;
+        while (!isLogout) {
+            System.out.print(Color.RED_BOLD_BRIGHT);
+            System.out.println("*** ADMIN MENU ***");
+            System.out.print(Color.RESET);
+            System.out.println("--- Select your option:  ---");
+            System.out.println("1- See all prescriptions");
+            System.out.println("2- Confirm prescriptions");
+            System.out.println("3- Logout");
+
+            int option = Input.getIntInputValue("");
+
+            switch (option) {
+                case 1:
+                    seeAllPrescriptions(adminDao, (Admin) admin);
+                    break;
+                case 2:
+                    ConfirmPrescriptions(adminDao, (Admin) admin);
+                    break;
+                case 3:
+                    isLogout = true;
+                    admin = null;
+                    break;
+                default:
+            }
+        }
+    }
+
+    private void ConfirmPrescriptions(UserDao<Admin> adminDao, Admin admin) {
+
+    }
+
+    private void seeAllPrescriptions(UserDao<Admin> adminDao, Admin admin) {
+        adminDao.seeAllPrescriptionsId(admin);
+    }
+
     private void showPatientMenu() {
         String name = Input.getStringInputValue("Enter your name: ");
         String password = Input.getStringInputValue("Enter your password: ");
         UserDao<Patient> patientDao = new UserDao<>(DbConnection.getConnection(), new Patient(name, password));
         try {
             User patient = patientDao.login();
-            loginMenu(patientDao, (Patient) patient);
+            patientLoginMenu(patientDao, (Patient) patient);
         } catch (UserNotFoundException e) {
             e.printStackTrace();
         }
     }
 
-    private void loginMenu(UserDao<Patient> patientDao, Patient patient) {
+    private void patientLoginMenu(UserDao<Patient> patientDao, Patient patient) {
         boolean isLogout = false;
         while (!isLogout) {
             System.out.print(Color.RED_BOLD_BRIGHT);
@@ -150,7 +197,7 @@ public class UiManager {
                 patientDao.login();
             }
             if (option == 3) {
-                loginMenu(patientDao, patient);
+                patientLoginMenu(patientDao, patient);
             }
         }
     }
@@ -161,6 +208,6 @@ public class UiManager {
         int prescriptionId = Input.getIntInputValue("");
         patientDao.deletePrescriptionById(prescriptionId);
         Printer.printInfoMessage("Prescription with id " + prescriptionId + " is deleted");
-        loginMenu(patientDao, patient);
+        patientLoginMenu(patientDao, patient);
     }
 }

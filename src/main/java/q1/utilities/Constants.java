@@ -14,8 +14,16 @@ public class Constants {
                     "FROM patients WHERE patients.`name` = ? AND patients.`password` = ?";
 
     //language=MySQL
+    public static final String GET_ADMIN_BY_NAME_PASSWORD =
+            "SELECT admins.* FROM admins WHERE admins.`name` = ? AND admins.`password` = ?";
+
+    //language=MySQL
     public static final String GET_PRESCRIPTION_BY_PATIENT_ID_QUERY =
             "SELECT prescriptions.* FROM prescriptions WHERE prescriptions.patient_id = ?";
+
+    //language=MySQL
+    public static final String GET_PRESCRIPTION_BY_ADMIN_ID_QUERY =
+            "SELECT prescriptions.* FROM prescriptions WHERE prescriptions.admin_id = ?";
 
     //language=MySQL
     public static final String GET_ITEM_BY_PRESCRIPTION_ID_QUERY =
@@ -32,11 +40,7 @@ public class Constants {
 
     //language=MySQL
     public static final String UPDATE_ITEM_QUERY =
-            "UPDATE `pharmacy`.`items` SET `name` = ?, `does_exist` = ?, `price` = ? WHERE `id` = ?";
-
-    //language=MySQL
-    public static final String DELETE_ITEM_QUERY =
-            "DELETE FROM `pharmacy`.`items` WHERE `id` = ?";
+            "UPDATE `pharmacy`.`items` SET `does_exist` = ?, `price` = ? WHERE `id` = ?";
 
     //language=MySQL
     public static final String GET_LAST_ADDED_PRESCRIPTION_QUERY =
