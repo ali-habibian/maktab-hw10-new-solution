@@ -112,7 +112,7 @@ public class UserDao<T extends User> {
                 for (var item : items) {
                     int itemId = item.getId();
                     String itemName = item.getName();
-                    System.out.println("id: " + itemId + "name: " + itemName);
+                    System.out.println("id: " + itemId + ", name: " + itemName);
                 }
             }
         }

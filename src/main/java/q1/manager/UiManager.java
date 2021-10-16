@@ -86,6 +86,7 @@ public class UiManager {
                     break;
                 case 5:
                     isLogout = true;
+                    patient = null;
                     break;
                 default:
             }
