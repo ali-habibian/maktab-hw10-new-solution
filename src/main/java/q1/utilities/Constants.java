@@ -51,8 +51,8 @@ public class Constants {
             "INSERT INTO `pharmacy`.`prescription_item` (`prescription_id`, `item_id`) VALUES (?, ?)";
 
     //language=MySQL
-    public static final String GET_CONFIRMED_PRESCRIPTIONS_QUERY =
-            "";
+    public static final String DELETE_PRESCRIPTION_BY_ID =
+            "DELETE FROM `pharmacy`.`prescriptions` WHERE `id` = ?";
 
     //language=MySQL
     public static final String DELETE_ITEM_BY_ID_QUERY =

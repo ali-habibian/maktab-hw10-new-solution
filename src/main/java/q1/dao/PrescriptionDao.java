@@ -102,4 +102,15 @@ public class PrescriptionDao {
         }
         return prescriptions;
     }
+
+    public void deletePrescriptionById(int prescriptionId) {
+        try (
+                PreparedStatement ps = connection.prepareStatement(Constants.DELETE_PRESCRIPTION_BY_ID)
+        ) {
+            ps.setInt(1, prescriptionId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

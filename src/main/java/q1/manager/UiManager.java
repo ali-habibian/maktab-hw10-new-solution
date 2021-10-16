@@ -82,6 +82,7 @@ public class UiManager {
                     }
                     break;
                 case 4:
+                    deletePrescription(patientDao, (Patient) patient);
                     break;
                 case 5:
                     isLogout = true;
@@ -126,7 +127,7 @@ public class UiManager {
 
     private void editPrescription(UserDao<Patient> patientDao, Patient patient) throws UserNotFoundException {
         patientDao.seeNotConfirmedPrescriptionsId(patient);
-        Printer.printInfoMessage("Enter id of prescription you want to edit.");
+        System.out.println("Enter id of prescription you want to edit.");
         int prescriptionId = Input.getIntInputValue("");
         while (true) {
             System.out.println("1.Add new item");
@@ -151,5 +152,14 @@ public class UiManager {
                 loginMenu(patientDao, patient);
             }
         }
+    }
+
+    private void deletePrescription(UserDao<Patient> patientDao, Patient patient) {
+        patientDao.seeNotConfirmedPrescriptionsId(patient);
+        System.out.println("Enter id of prescription you want to delete.");
+        int prescriptionId = Input.getIntInputValue("");
+        patientDao.deletePrescriptionById(prescriptionId);
+        Printer.printInfoMessage("Prescription with id " + prescriptionId + " is deleted");
+        loginMenu(patientDao, patient);
     }
 }

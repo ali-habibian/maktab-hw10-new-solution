@@ -136,4 +136,9 @@ public class UserDao<T extends User> {
         PrescriptionDao prescriptionDao = new PrescriptionDao(connection);
         return prescriptionDao.addPrescription(prescription);
     }
+
+    public void deletePrescriptionById(int prescriptionId){
+        PrescriptionDao prescriptionDao = new PrescriptionDao(connection);
+        prescriptionDao.deletePrescriptionById(prescriptionId);
+    }
 }
